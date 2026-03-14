@@ -1,0 +1,74 @@
+{
+  "name": "koa-helmet",
+  "version": "9.0.0",
+  "description": "Security header middleware collection for koa",
+  "keywords": [
+    "csp",
+    "headers",
+    "helmet",
+    "hsts",
+    "koa",
+    "security",
+    "x-frame-options"
+  ],
+  "license": "MIT",
+  "author": "Matt Venables <matt@venabl.es>",
+  "repository": {
+    "url": "git+https://github.com/venables/koa-helmet.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "commonjs",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsdown src/index.ts --format esm,cjs --dts --clean",
+    "changeset": "npx @changesets/cli",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run build && npm test",
+    "fix": "npm run format && npm run lint:fix",
+    "format": "oxfmt --write .",
+    "format:check": "oxfmt --check .",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix --fix-suggestions",
+    "prepublishOnly": "npm run build",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit --pretty"
+  },
+  "devDependencies": {
+    "@types/koa": "^3.0.1",
+    "@types/supertest": "^6.0.3",
+    "helmet-7": "npm:helmet@^7.0.0",
+    "helmet-8": "npm:helmet@^8.0.0",
+    "koa-2": "npm:koa@^2.13.0",
+    "koa-3": "npm:koa@^3.0.0",
+    "oxfmt": "^0.20.0",
+    "oxlint": "^1.35.0",
+    "oxlint-tsgolint": "^0.10.0",
+    "publint": "^0.3.16",
+    "supertest": "^7.1.4",
+    "tsdown": "^0.18.3",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "helmet": "^6 || ^7 || ^8",
+    "koa": "^2 || ^3"
+  },
+  "engines": {
+    "node": ">= 18.0.0"
+  }
+}
