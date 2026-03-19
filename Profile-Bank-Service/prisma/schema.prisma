@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+model Profile {
+  id           String   @id @default(uuid())
+  userId       String   @unique   // comes from Auth service
+  firstName String
+  lastName  String
+  phone        String?  @unique
+  dateOfBirth  DateTime?
+  addressLine1  String?
+  addressLine2  String?
+  kycStatus    KycStatus @default(PENDING)
+  preferences  ProfilePreference?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  documents      ProfileDocument[] 
+}
+
+enum KycStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model ProfileDocument {
+  id          String   @id @default(uuid())
+  profileId   String
+  type        DocumentType
+  fileUrl     String
+  status      DocumentStatus @default(PENDING)
+  rejectionReason String?
+  verifiedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  reviwedAt   DateTime?
+  reviwedBy   String?
+
+  profile Profile @relation(fields: [profileId], references: [id])
+
+
+  @@unique([profileId, type]) 
+  @@index([profileId])
+}
+
+enum DocumentType {
+  AADHAR
+  PAN
+  PASSPORT
+  ADDRESS_PROOF
+}
+
+enum DocumentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model ProfilePreference {
+  id                 String   @id @default(uuid())
+  profileId          String   @unique
+
+  emailNotifications Boolean  @default(true)
+  smsNotifications   Boolean  @default(false)
+  pushNotifications  Boolean  @default(true)
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  profile Profile @relation(fields: [profileId], references: [id])
+}
+
+
