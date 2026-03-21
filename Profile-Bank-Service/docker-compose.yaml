@@ -1,35 +1,45 @@
+# version: "3.9"
+
+# services:
+#   fake-gcs:
+#     image: fsouza/fake-gcs-server:latest
+#     container_name: fake-gcs
+#     ports:
+#       - "4443:4443"
+#     command: >
+#       -scheme http
+#       -port 4443
+#       -backend filesystem
+#       -filesystem-root /data
+#       -public-host localhost:4443
+#     volumes:
+#       - ./fake-gcs-data:/data
+
+  # fake-gcs-init:
+  #   image: curlimages/curl:8.6.0
+  #   depends_on:
+  #     - fake-gcs
+  #   entrypoint: ["/bin/sh", "-c"]
+  #   command: >
+  #     echo "Waiting for fake GCS..." &&
+  #     sleep 5 &&
+  #     curl -X POST "http://fake-gcs:4443/storage/v1/b"
+  #     -H "Content-Type: application/json"
+  #     -d '{"name":"kyc-documents"}' ||
+  #     echo "Bucket already exists"
+
 version: "3.9"
 
-
 services:
-  fake-gcs:
-    image: fsouza/fake-gcs-server:latest
-    container_name: fake-gcs
+  minio:
+    image: minio/minio:latest
+    container_name: minio
     ports:
-      - "4443:4443"
-    command: >
-      -scheme http
-      -port 4443
-      -external-url http://localhost:4443
-      -data /data
+      - "9000:9000"   # API
+      - "9001:9001"   # Console UI
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password
+    command: server /data --console-address ":9001"
     volumes:
-      - ./fake-gcs-data:/data
-
-
-  fake-gcs-init:
-    image: curlimages/curl:8.6.0
-    depends_on:
-      - fake-gcs
-    entrypoint: ["/bin/sh", "-c"]
-    command: >
-      echo "Waiting for fake GCS..." &&
-      sleep 3 &&
-      curl -X POST "http://fake-gcs:4443/storage/v1/b?project=test-project"
-      -H "Content-Type: application/json"
-      -d '{"name":"kyc-documents"}' ||
-      echo "Bucket already exists"
-
-
-
-
-
+      - ./minio-data:/data
