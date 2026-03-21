@@ -34,6 +34,7 @@ services:
   minio:
     image: minio/minio:latest
     container_name: minio
+    restart: unless-stopped
     ports:
       - "9000:9000"   # API
       - "9001:9001"   # Console UI
@@ -42,4 +43,7 @@ services:
       MINIO_ROOT_PASSWORD: password
     command: server /data --console-address ":9001"
     volumes:
-      - ./minio-data:/data
+      - minio-data:/data
+
+volumes:
+  minio-data:
