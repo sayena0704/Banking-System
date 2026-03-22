@@ -10,24 +10,25 @@ import { approveDocumentController, getDocumentStatusController, listDocumentsCo
 import { adminMiddleware } from "../middlewares/admin.middleware";
 import { getPreferencesController, updatePreferencesController } from "../controllers/profilePreference.controller";
 import { changePasswordController } from "../controllers/security.controller";
+import { userMiddleware } from "../middlewares/user.middleware";
 
 
 const router = new Router({ prefix: '/profile'});
 
 
-router.get('/', authMiddleware,getProfile);
-router.post('/', authMiddleware,createProfileController);
+router.get('/', authMiddleware,userMiddleware,getProfile);
+router.post('/', authMiddleware,userMiddleware, createProfileController);
 router.put("/", authMiddleware, updateProfileController);
-router.post("/documents", authMiddleware, uploadDocumentController);
-router.get("/documents", authMiddleware, listDocumentsController);
+router.post("/documents", authMiddleware, userMiddleware, uploadDocumentController);
+router.get("/documents", authMiddleware,userMiddleware, listDocumentsController);
 router.get(
   "/documents/:id/status",
-  authMiddleware,
+  authMiddleware, userMiddleware,
   getDocumentStatusController
 );
 router.put(
   "/documents/:id/resubmit",
-  authMiddleware,
+  authMiddleware, userMiddleware,
   resubmitDocumentController
 );
 router.get("/admin/documents", authMiddleware, adminMiddleware, listPendingDocumentsController);
@@ -38,6 +39,7 @@ router.post("/admin/documents/:id/reject", authMiddleware, adminMiddleware, reje
 router.get(
   "/preferences",
   authMiddleware,
+  userMiddleware,
   getPreferencesController
 );
 
@@ -45,6 +47,7 @@ router.get(
 router.put(
   "/preferences",
   authMiddleware,
+  userMiddleware,
   updatePreferencesController
 );
 
@@ -52,6 +55,7 @@ router.put(
 router.post(
   "/security/password",
   authMiddleware,
+  userMiddleware,
   changePasswordController
 );
 

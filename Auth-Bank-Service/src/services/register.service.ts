@@ -5,7 +5,9 @@ import { hashPassword } from "../utils/password";
 import { AppError } from "../utils/appError";
 export const registerUser = async (
     email: string,
-    password: string
+    password: string,
+    role?: "USER" | "ADMIN",
+    adminSecret?: string
 ) => {
     const existingUser = await prisma.user.findUnique({
         where: { email },
@@ -16,6 +18,11 @@ export const registerUser = async (
         throw new AppError('User already exists', 409);
     }
 
+    if (role === "ADMIN") {
+        if (adminSecret !== process.env.ADMIN_SECRET) {
+            throw new AppError("Unauthorized to create admin", 403);
+        }
+    }
 
     const hashedPassword = await hashPassword(password);
 
@@ -24,10 +31,10 @@ export const registerUser = async (
         data: {
             email,
             password: hashedPassword,
-            role: "USER",
+            role: role || "USER",
             isVerified: false,
         },
-       
+
     });
 
 

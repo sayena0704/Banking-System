@@ -3,7 +3,6 @@ import { uploadDocumentSchema } from "../validators/document.validator";
 import { approveDocument, getDocumentStatus, listDocuments, listPendingDocuments, rejectDocument, resubmitDocument, uploadDocument } from "../services/document.service";
 import { AppError } from "../utils/appError";
 import { uploadDocumentToMinio } from "../services/minioUpload.service";
-import prisma from "../db/prisma";
 
 
 export const uploadDocumentController = async (ctx: Context) => {

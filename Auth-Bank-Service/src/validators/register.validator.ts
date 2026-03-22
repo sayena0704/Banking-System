@@ -25,5 +25,7 @@ export const registerSchema = z.object({
         "Password must contain at least one special character (* # @ $ ! % &)",
     }),
 
+  role: z.enum(["USER", "ADMIN"]).optional(),
+  adminSecret: z.string().optional(),
 
 });

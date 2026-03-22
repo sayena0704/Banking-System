@@ -7,10 +7,10 @@ export const register = async (ctx: Context) => {
 
 
   const validatedData = registerSchema.parse(ctx.request.body);
-  const { email, password } = validatedData;
+  const { email, password, role, adminSecret } = validatedData;
 
 
-  const result = await registerUser(email, password);
+  const result = await registerUser(email, password, role, adminSecret);
 
 
   ctx.status = 201;
